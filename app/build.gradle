@@ -1,0 +1,34 @@
+apply plugin: 'com.android.application'
+
+android {
+    signingConfigs {
+        config {
+            keyAlias 'mycontacts'
+            keyPassword 'mycontacts'
+            storeFile file('/home/feriodice/AndroidStudioProjects/MyContacts/keys/com.stuts.mycontacts')
+            storePassword 'mycontacts'
+        }
+    }
+    compileSdkVersion 20
+    buildToolsVersion '20.0.0'
+    defaultConfig {
+        applicationId 'stuts.com.mycontacts'
+        minSdkVersion 15
+        targetSdkVersion 17
+        versionCode 1
+        versionName '1.0'
+    }
+    buildTypes {
+        release {
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    productFlavors {
+    }
+}
+
+dependencies {
+    compile 'com.google.android.gms:play-services:4.4.52'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}

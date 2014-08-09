@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MyContacts</string>
+    <string name="contactlist_load_error">Error loading information. Try again to reload</string>
+    <string name="contactlist_try_again">Try Again</string>
+    <string name="contactlist_loading">Loading...</string>
+    <string name="title_activity_contact_list">My Contacts</string>
+
+</resources>
