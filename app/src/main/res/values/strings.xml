@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">MyContacts</string>
+
     <string name="contactlist_load_error">Error loading information. Try again to reload</string>
     <string name="contactlist_try_again">Try Again</string>
     <string name="contactlist_loading">Loading...</string>

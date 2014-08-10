@@ -1,7 +1,10 @@
 package stuts.com.mycontacts;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
@@ -25,13 +28,19 @@ import java.util.concurrent.TimeUnit;
 public class LoginActivity extends Activity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
+    private static final int SIGNIN_REQUEST_CODE = 1;
+
     private GoogleApiClient mGoogleClient;
     private ConnectionResult mConnectionResult;
+    private boolean mIsSignInRequested = false;
 
     private View.OnClickListener mSignInListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            resolveSignInError();
+            if (mIsSignInRequested) return;
+
+            mIsSignInRequested = true;
+            requestGooglePermission();
         }
     };
 
@@ -97,10 +106,10 @@ public class LoginActivity extends Activity implements
         mConnectionResult = connectionResult;
     }
 
-    private void resolveSignInError() {
+    private void requestGooglePermission() {
         Log.d(S.TAG, "resolveSignInError");
         try {
-            mConnectionResult.startResolutionForResult(this, 1);
+            mConnectionResult.startResolutionForResult(this, SIGNIN_REQUEST_CODE);
         } catch (IntentSender.SendIntentException e) {
             mGoogleClient.connect();
         }
@@ -109,5 +118,13 @@ public class LoginActivity extends Activity implements
 
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
         Log.d(S.TAG, "resolveSignInError" + requestCode + " " + responseCode);
+
+        if (requestCode != SIGNIN_REQUEST_CODE) return;
+
+        mIsSignInRequested = false;
+
+        if (responseCode == Activity.RESULT_OK) {
+            mGoogleClient.connect();
+        }
     }
 }

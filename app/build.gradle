@@ -2,13 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
     signingConfigs {
-        config {
-            keyAlias 'mycontacts'
-            keyPassword 'mycontacts'
-            storeFile file('/home/feriodice/AndroidStudioProjects/MyContacts/keys/com.stuts.mycontacts')
-            storePassword 'mycontacts'
+        release {
+            storeFile file("../keys/mycontacts.keystore")
+            storePassword "mycontacts"
+            keyAlias "mycontacts"
+            keyPassword "mycontacts"
         }
     }
+
     compileSdkVersion 20
     buildToolsVersion '20.0.0'
     defaultConfig {
@@ -21,6 +22,7 @@ android {
     buildTypes {
         release {
             runProguard false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
