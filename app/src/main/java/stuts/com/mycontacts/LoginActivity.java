@@ -1,28 +1,17 @@
 package stuts.com.mycontacts;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
-import android.os.Looper;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Result;
-import com.google.android.gms.common.api.a;
 import com.google.android.gms.plus.Plus;
-
-import java.util.concurrent.TimeUnit;
 
 
 public class LoginActivity extends Activity implements
@@ -84,6 +73,28 @@ public class LoginActivity extends Activity implements
         }
     }
 
+    private void requestGooglePermission() {
+        Log.d(S.TAG, "requestGooglePermission");
+        try {
+            mConnectionResult.startResolutionForResult(this, SIGNIN_REQUEST_CODE);
+        } catch (IntentSender.SendIntentException e) {
+            mGoogleClient.connect();
+        }
+
+    }
+
+    protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
+        Log.d(S.TAG, "onActivityResult " + requestCode + " " + responseCode);
+
+        if (requestCode != SIGNIN_REQUEST_CODE) return;
+
+        mIsSignInRequested = false;
+
+        if (responseCode == Activity.RESULT_OK) {
+            mGoogleClient.connect();
+        }
+    }
+
     @Override
     public void onConnected(Bundle bundle) {
         Log.d(S.TAG, "connected");
@@ -106,25 +117,4 @@ public class LoginActivity extends Activity implements
         mConnectionResult = connectionResult;
     }
 
-    private void requestGooglePermission() {
-        Log.d(S.TAG, "resolveSignInError");
-        try {
-            mConnectionResult.startResolutionForResult(this, SIGNIN_REQUEST_CODE);
-        } catch (IntentSender.SendIntentException e) {
-            mGoogleClient.connect();
-        }
-
-    }
-
-    protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
-        Log.d(S.TAG, "resolveSignInError" + requestCode + " " + responseCode);
-
-        if (requestCode != SIGNIN_REQUEST_CODE) return;
-
-        mIsSignInRequested = false;
-
-        if (responseCode == Activity.RESULT_OK) {
-            mGoogleClient.connect();
-        }
-    }
 }

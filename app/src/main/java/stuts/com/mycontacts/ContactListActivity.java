@@ -1,13 +1,10 @@
 package stuts.com.mycontacts;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -15,13 +12,10 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 
-import stuts.com.mycontacts.R;
-
 public class ContactListActivity extends ListActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
 
     private GoogleApiClient mGoogleClient;
-    private ConnectionResult mConnectionResult;
 
     private ContactListAdapter mAdapter;
 
@@ -72,7 +66,7 @@ public class ContactListActivity extends ListActivity implements
     public void onConnected(Bundle bundle) {
         Log.d(S.TAG, "connected");
 
-        mAdapter.init();
+        mAdapter.getNextPage();
     }
 
     @Override
@@ -83,7 +77,11 @@ public class ContactListActivity extends ListActivity implements
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.d(S.TAG, "failed" + connectionResult.toString());
-        mConnectionResult = connectionResult;
+        Intent i = new Intent();
+        i.setClass(this, LoginActivity.class);
+
+        startActivity(i);
+        finish();
     }
 
 }

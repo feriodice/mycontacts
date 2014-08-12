@@ -33,8 +33,16 @@ public class ContactListAdapter  extends ArrayAdapter<StutsContact> {
         @Override
         public void onResult(People.LoadPeopleResult loadPeopleResult) {
             Log.d(S.TAG, "contact callback");
+
+            if (!loadPeopleResult.getStatus().isSuccess()) {
+                add(ERROR);
+                remove(LOADING);
+                return;
+            }
+
             mIsWaitingResponse = false;
             mNextPageToken = loadPeopleResult.getNextPageToken();
+            Log.d(S.TAG, "contact callback nextPageToken " + mNextPageToken);
 
             if (loadPeopleResult.getPersonBuffer().getCount() == 0) {
                 remove(LOADING);
@@ -64,7 +72,7 @@ public class ContactListAdapter  extends ArrayAdapter<StutsContact> {
         public void onClick(View v) {
             remove(ERROR);
             add(LOADING);
-            init();
+            getNextPage();
         }
     };
 
@@ -77,7 +85,7 @@ public class ContactListAdapter  extends ArrayAdapter<StutsContact> {
         add(LOADING);
     }
 
-    public void init() {
+    public void getNextPage() {
         if (!mGoogleClient.isConnected() || mIsWaitingResponse || mIsFinished) return;
 
         mIsWaitingResponse = true;
@@ -108,6 +116,8 @@ public class ContactListAdapter  extends ArrayAdapter<StutsContact> {
         LayoutInflater inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.row_loading, null);
         view.setTag(LOADING);
+
+        getNextPage();
         return view;
     }
 
