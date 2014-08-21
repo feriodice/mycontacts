@@ -2,12 +2,14 @@ package stuts.com.mycontacts;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -16,6 +18,7 @@ import com.google.android.gms.plus.People;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 
+import stuts.com.mycontacts.cache.ImageLoader;
 import stuts.com.mycontacts.data.StutsContact;
 
 public class ContactListAdapter  extends ArrayAdapter<StutsContact> {
@@ -28,6 +31,9 @@ public class ContactListAdapter  extends ArrayAdapter<StutsContact> {
     private boolean mIsFinished = false;
 
     private String mNextPageToken = null;
+
+    private final ImageLoader mImageLoader;
+
 
     private ResultCallback<People.LoadPeopleResult> mResultCallback = new ResultCallback<People.LoadPeopleResult>() {
         @Override
@@ -53,6 +59,9 @@ public class ContactListAdapter  extends ArrayAdapter<StutsContact> {
                 StutsContact contact = new StutsContact();
                 contact.name = person.getDisplayName();
                 contact.nickname = person.getNickname();
+                if (person.hasImage() && person.getImage().getUrl() != null) {
+                    contact.imageUrl = person.getImage().getUrl();
+                }
 
                 insert(contact, getCount() - 1);
             }
@@ -81,6 +90,7 @@ public class ContactListAdapter  extends ArrayAdapter<StutsContact> {
 
         mGoogleClient = apiClient;
         mActivity = activity;
+        mImageLoader = new ImageLoader(this, activity);
 
         add(LOADING);
     }
@@ -107,7 +117,16 @@ public class ContactListAdapter  extends ArrayAdapter<StutsContact> {
         }
 
         TextView streetText = (TextView) convertView.findViewById(R.id.name);
-        streetText.setText(contact.name );
+        streetText.setText(contact.name);
+
+        ImageView image = (ImageView) convertView.findViewById(R.id.image);
+        Drawable drawable = mImageLoader.getImage(contact);
+        if (drawable != null) {
+            image.setImageDrawable(drawable);
+            image.setVisibility(View.VISIBLE);
+        } else {
+            image.setVisibility(View.INVISIBLE);
+        }
 
         return convertView;
     }
